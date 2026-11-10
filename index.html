@@ -165,12 +165,12 @@ const CONSENT_HTML = `<div class="card narrow" id="letter">
    <div class="btnrow" style="justify-content:space-between;align-items:center"><a href="#" id="pr" class="small" style="color:var(--ink2)">Print or save a copy of this letter</a><button class="primary" id="b">Begin the study</button></div></div>`;
 /* ======================= CONFIG ======================= */
 const CONFIG = {
-  STUDY_VERSION: "s3-pilot-1.0.0",
+  STUDY_VERSION: "s3-pilot-1.1.0",
   SUPABASE_URL: "https://zwipeiluipgwqrgbmncc.supabase.co",
   SUPABASE_KEY: "sb_publishable_tOpJrlMKyh4KHuML2CEbbw_Z0Cam54c",   // publishable key: insert-only by RLS
   TABLE: "study3_responses",
   MINUTES: 10,
-  SONA_CREDIT_URL: "",   // SONA completion URL; the participant's SONA id is appended. Left empty: no redirect.
+  NEXT_URL: "https://terry.qualtrics.com/jfe/form/SV_0VNusN9UYQhMvjg",   // participants are sent here after the thank-you screen
   COMPLETION_CODE: "", PROLIFIC_RETURN: "https://app.prolific.com/submissions/complete?cc="
 };
 
@@ -394,9 +394,10 @@ function done(){
     app.innerHTML=`<div class="card narrow"><h1>Thank you for participating!</h1><p>Your answers have been saved. Taking you back to Prolific…</p></div>`;
     if(!S.is_test) setTimeout(()=>location.href=CONFIG.PROLIFIC_RETURN+CONFIG.COMPLETION_CODE,1500); return;
   }
-  const url = CONFIG.SONA_CREDIT_URL && S.participant_id ? CONFIG.SONA_CREDIT_URL + encodeURIComponent(S.participant_id) : "";
-  app.innerHTML=`<div class="card narrow"><h1>Thank you for participating!</h1><p>Your answers have been saved.${url?" Your SONA credit will be granted automatically.":""}</p></div>`;
-  if(url && !S.is_test) setTimeout(()=>location.href=url,2500);
+  const url = CONFIG.NEXT_URL;
+  app.innerHTML=`<div class="card narrow"><h1>Thank you for participating!</h1><p>Your answers have been saved. Taking you to the next page…</p>
+    <div class="btnrow"><a href="${url}"><button class="primary">Continue</button></a></div></div>`;
+  if(!S.is_test) setTimeout(()=>location.href=url,2500);
 }
 
 function makeSlider(node, init, cb){
